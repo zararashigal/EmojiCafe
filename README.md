@@ -12,6 +12,10 @@ Ever wanted to smash two emojis together and get a brand new one? That's all thi
 
 Click the mix button next to the emoji button, pick one emoji, then pick another. Hold Shift if you want to keep the picker open and mix a few in a row.
 
+This is what the button looks like in your chat bar:
+
+<img src="./images/button.png" alt="The EmojiMix button in the Discord chat bar" width="96">
+
 Some pairs don't have official art from Google. Those get blended together locally instead, and they show a tiny dot in the picker so you can tell them apart.
 
 ## How it sends
