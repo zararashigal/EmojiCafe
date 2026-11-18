@@ -18,6 +18,10 @@ This is what the button looks like in your chat bar:
 
 Some pairs don't have official art from Google. Those get blended together locally instead, and they show a tiny dot in the picker so you can tell them apart.
 
+### Typing it inline
+
+You can also just type `:cat+dog:` in a message and it turns into the mix when you hit send. It uses Discord's normal emoji names, so whatever you'd type for `:cat:` works here. If a name isn't one of the mixable emojis, the text is left alone. You can switch this off in the plugin settings. It needs the server emoji or link sending mode, since an image upload can't sit inside a line of text.
+
 ## How it sends
 
 You can change this in the plugin settings.

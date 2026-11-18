@@ -325,6 +325,7 @@ const DEFAULTS = {
     renderInline: true,
     jumbo: true,
     closeOnSelect: true,
+    inlineSyntax: true,
     officialOnly: false,
     delivery: "upload",
     uploadSize: 48,
@@ -349,6 +350,8 @@ const EMOJIS = EMOJI_DATA.map((row, index) => {
     };
 });
 const BY_HEX = new Map(EMOJIS.map(e => [e.hex, e]));
+const BY_GLYPH = new Map(EMOJIS.map(e => [e.glyph.replace(/\uFE0F/g, ""), e]));
+const MIX_SYNTAX = /:([\w-]+)\+([\w-]+):/g;
 
 /* ------------------------------------------------------------------------- *
  * Selectors
@@ -1031,6 +1034,7 @@ module.exports = class EmojiMix {
         this.frame = 0;
 
         BdApi.DOM.addStyle(this.meta.name, CSS);
+        this.patchSend();
         this.applyBodyClasses();
 
         this.observer = new MutationObserver(mutations => {
@@ -1052,6 +1056,7 @@ module.exports = class EmojiMix {
         cancelAnimationFrame(this.frame);
         this.picker?.close();
         this.service?.destroy();
+        BdApi.Patcher.unpatchAll(this.meta.name);
         BdApi.DOM.removeStyle(this.meta.name);
         document.body.classList.remove("emojimix-no-inline", "emojimix-no-jumbo");
         document.querySelectorAll(".emojimix-wrap").forEach(el => el.remove());
@@ -1068,6 +1073,7 @@ module.exports = class EmojiMix {
                 {type: "switch", id: "renderInline", name: "Show mixes as emojis in chat", note: "Renders Emoji Kitchen links at the size of a normal emoji and hides their image preview. Only you see this; others still get the link.", value: this.settings.renderInline},
                 {type: "switch", id: "jumbo", name: "Enlarge mix-only messages", note: "Like vanilla emojis, a message made only of mixes is shown larger.", value: this.settings.jumbo},
                 {type: "switch", id: "closeOnSelect", name: "Close the picker after choosing", note: "Hold Shift while choosing to keep it open for one pick.", value: this.settings.closeOnSelect},
+                {type: "switch", id: "inlineSyntax", name: "Type :cat+dog: to mix", note: "Turns :emoji+emoji: in a message into a mix when you send it, using Discord's normal emoji names. Works with the server emoji and link modes.", value: this.settings.inlineSyntax},
                 {
                     type: "dropdown",
                     id: "delivery",
@@ -1299,6 +1305,51 @@ module.exports = class EmojiMix {
         clone.querySelectorAll("a.emojimix-link, time, [class*='edited']").forEach(node => node.remove());
         const onlyMixes = clone.textContent.trim() === "";
         content.querySelectorAll("a.emojimix-link").forEach(link => link.classList.toggle("emojimix-jumbo", onlyMixes));
+    }
+
+    /* ----- :name+name: syntax ----- */
+
+    patchSend() {
+        const actions = BdApi.Webpack.getByKeys("sendMessage", "editMessage");
+        if (!actions) return;
+        BdApi.Patcher.instead(this.meta.name, actions, "sendMessage", (that, args, original) => {
+            const message = args[1];
+            if (!this.settings.inlineSyntax || (message?.content ?? "").search(MIX_SYNTAX) < 0) return original.apply(that, args);
+            return this.expand(message.content)
+                .then(content => original.apply(that, [args[0], {...message, content}, ...args.slice(2)]))
+                .catch(() => original.apply(that, args));
+        });
+    }
+
+    emojiByName(name) {
+        const {EmojiStore} = BdApi.Webpack.Stores;
+        const glyph = EmojiStore?.getDisambiguatedEmojiContext?.().getByName?.(name)?.surrogates;
+        return (glyph && BY_GLYPH.get(glyph.replace(/\uFE0F/g, ""))) || EMOJIS.find(e => e.keywords.split(" ").includes(name.toLowerCase()));
+    }
+
+    async expand(content) {
+        let out = "", last = 0;
+        for (const m of content.matchAll(MIX_SYNTAX)) {
+            const a = this.emojiByName(m[1]);
+            const b = this.emojiByName(m[2]);
+            out += content.slice(last, m.index) + ((a && b && await this.mixText(a, b)) || m[0]);
+            last = m.index + m[0].length;
+        }
+        return out + content.slice(last);
+    }
+
+    async mixText(a, b) {
+        const res = await this.service.resolve(a, b);
+        this.addRecent(res);
+        if (this.settings.delivery === "emoji") {
+            try {
+                const emoji = await this.serverEmoji(res);
+                return `<:${emoji.name}:${emoji.id}>`;
+            } catch (error) {
+                console.error(`[${this.meta.name}]`, error);
+            }
+        }
+        return res.source === "google" ? res.remoteUrl : null;
     }
 
     /* ----- sending ----- */
