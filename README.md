@@ -28,12 +28,12 @@ You can change this in the plugin settings.
 
 - **Image upload** is the default. Your mix goes out as a small image (32 to 96 px, you choose). Heads up that the phone app blows small images up, so they look bigger there.
 - **Server emoji** sends a proper inline emoji that looks right everywhere, phones included. It uploads your mixes into servers you pick and rotates the slots, so the oldest mix gets deleted once a server is full. You need Manage Expressions in those servers. And a reminder, for ya dunces!! Jk. But yes, without Nitro you can only send these inside the server they live in, so **DMs and other servers need Nitro**. Thank discord for this... Any old message that used a rotated-out mix will lose its emoji.
+If you can't find the setting for server based slots, click the arrow to the right of it in the plugins settings:
+<img width="881" height="57" alt="{1F4D4CE7-9B4C-44A7-8DC0-9B8EADCDB65A}" src="https://github.com/user-attachments/assets/a7c31cc1-1771-4eb6-9bb6-7525c5f4ddf3" />
+
 - **Link** just sends the link. It only looks like an emoji for people who also have the plugin.
 
 ## Good to know
-- If you can't find the setting for server based slots, click the arrow to the right of it in the plugins settings:
-<img width="881" height="57" alt="{1F4D4CE7-9B4C-44A7-8DC0-9B8EADCDB65A}" src="https://github.com/user-attachments/assets/a7c31cc1-1771-4eb6-9bb6-7525c5f4ddf3" />
-
 - The emoji list is built in, so the plugin doesn't need any other website to be online.
 - The mix art is Google's. It gets downloaded once and kept on your computer, and if it can't be reached the plugin makes its own blend instead.
 - This isn't affiliated with Google or Discord.
