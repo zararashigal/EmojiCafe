@@ -33,6 +33,7 @@ You can change this in the plugin settings.
 ## Good to know
 - If you can't find the setting for server based slots, click the arrow to the right of it in the plugins settings:
 <img width="881" height="57" alt="{1F4D4CE7-9B4C-44A7-8DC0-9B8EADCDB65A}" src="https://github.com/user-attachments/assets/a7c31cc1-1771-4eb6-9bb6-7525c5f4ddf3" />
+
 - The emoji list is built in, so the plugin doesn't need any other website to be online.
 - The mix art is Google's. It gets downloaded once and kept on your computer, and if it can't be reached the plugin makes its own blend instead.
 - This isn't affiliated with Google or Discord.
