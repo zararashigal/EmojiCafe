@@ -27,7 +27,7 @@ You can also just type `:cat+dog:` in a message and it turns into the mix when y
 You can change this in the plugin settings.
 
 - **Image upload** is the default. Your mix goes out as a small image (32 to 96 px, you choose). Heads up that the phone app blows small images up, so they look bigger there.
-- **Server emoji** sends a proper inline emoji that looks right everywhere, phones included. It uploads your mixes into servers you pick and rotates the slots, so the oldest mix gets deleted once a server is full. You need Manage Expressions in those servers. And a reminder, sweetie: without Nitro you can only send these inside the server they live in, so **DMs and other servers need Nitro**. Any old message that used a rotated-out mix will lose its emoji.
+- **Server emoji** sends a proper inline emoji that looks right everywhere, phones included. It uploads your mixes into servers you pick and rotates the slots, so the oldest mix gets deleted once a server is full. You need Manage Expressions in those servers. And a reminder, for ya dunces!! Jk. But yes, without Nitro you can only send these inside the server they live in, so **DMs and other servers need Nitro**. Thank discord for this... Any old message that used a rotated-out mix will lose its emoji.
 - **Link** just sends the link. It only looks like an emoji for people who also have the plugin.
 
 ## Good to know

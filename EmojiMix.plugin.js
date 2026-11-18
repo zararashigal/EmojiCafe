@@ -751,6 +751,11 @@ class Picker {
         return !q || emoji.keywords.includes(q) || emoji.glyph === q;
     }
 
+    results() {
+        const q = this.query.trim().toLowerCase();
+        return [...EMOJIS.filter(e => this.matches(e)), ...(q ? this.plugin.searchEmojis(q) : [])];
+    }
+
     section(title, action) {
         return h("div", {class: "emojimix-section-title"}, h("span", {}, title), action);
     }
@@ -777,8 +782,7 @@ class Picker {
         }
 
         const grid = h("div", {class: "emojimix-grid emojimix-main"});
-        for (const emoji of EMOJIS) {
-            if (!this.matches(emoji)) continue;
+        for (const emoji of this.results()) {
             grid.append(h("button", {
                 class: "emojimix-tile",
                 type: "button",
@@ -794,7 +798,7 @@ class Picker {
     }
 
     renderSecondStep() {
-        const first = EMOJIS[this.first];
+        const first = this.first;
         const toggle = h("button", {
             class: "emojimix-toggle",
             type: "button",
@@ -823,9 +827,7 @@ class Picker {
             toggle);
 
         const grid = h("div", {class: "emojimix-grid emojimix-main"});
-        for (const emoji of EMOJIS) {
-            if (this.matches(emoji)) grid.append(this.mixTile(first, emoji, true));
-        }
+        for (const emoji of this.results()) grid.append(this.mixTile(first, emoji, true));
         this.content.append(this.section(`Mix with ${first.name}`), grid);
         if (!grid.children.length) this.content.append(h("div", {class: "emojimix-empty"}, "No emojis found"));
     }
@@ -893,7 +895,7 @@ class Picker {
     /* ----- interaction ----- */
 
     pickFirst(emoji) {
-        this.first = emoji.index;
+        this.first = emoji;
         this.query = "";
         this.search.value = "";
         this.render();
@@ -1330,6 +1332,18 @@ module.exports = class EmojiMix {
         // Not in Google's set, so it has no official art and is only ever drawn locally.
         const hex = [...glyph].map(c => c.codePointAt(0).toString(16)).join("-");
         return {hex, glyph, keywords: name, name, urlId: hex, custom: true};
+    }
+
+    searchEmojis(query) {
+        const names = Object.keys(BdApi.Webpack.Stores.EmojiStore?.getDisambiguatedEmojiContext?.().unicodeAliases ?? {});
+        const found = new Map();
+        for (const name of names) {
+            if (found.size >= 48) break;
+            if (!name.includes(query.replace(/\s+/g, "_"))) continue;
+            const emoji = this.emojiByName(name);
+            if (emoji?.custom && !found.has(emoji.hex)) found.set(emoji.hex, emoji);
+        }
+        return [...found.values()];
     }
 
     async expand(content) {
