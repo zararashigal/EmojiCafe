@@ -38,6 +38,9 @@ You can change this in the plugin settings.
 
 Made with love by Ashley <3 :3
 
+## STILL TRYING TO FIGURE OUT HOW TO BRIDGE THE INCOMPATIBILITY BETWEEN DISCORDS TWEMOJI AND GOOGLES EMOJI SYSTEM!!
+The picker will not show every possible combo, inline typed syntax works.
+
 ## License
 
 [MIT](./LICENSE)
