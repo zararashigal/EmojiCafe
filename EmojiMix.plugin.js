@@ -507,7 +507,7 @@ class MixService {
 
         let offline = false;
         const knownMiss = stored?.miss && Date.now() - stored.t < MISS_TTL;
-        if (!knownMiss) {
+        if (!knownMiss && x.date && y.date) {
             const found = await this.fetchOfficial(x, y);
             if (found) {
                 this.dbPut(key, {blob: found.blob, url: found.url});
@@ -1324,7 +1324,12 @@ module.exports = class EmojiMix {
     emojiByName(name) {
         const {EmojiStore} = BdApi.Webpack.Stores;
         const glyph = EmojiStore?.getDisambiguatedEmojiContext?.().getByName?.(name)?.surrogates;
-        return (glyph && BY_GLYPH.get(glyph.replace(/\uFE0F/g, ""))) || EMOJIS.find(e => e.keywords.split(" ").includes(name.toLowerCase()));
+        const known = (glyph && BY_GLYPH.get(glyph.replace(/\uFE0F/g, ""))) || EMOJIS.find(e => e.keywords.split(" ").includes(name.toLowerCase()));
+        if (known || !glyph) return known;
+
+        // Not in Google's set, so it has no official art and is only ever drawn locally.
+        const hex = [...glyph].map(c => c.codePointAt(0).toString(16)).join("-");
+        return {hex, glyph, keywords: name, name, urlId: hex, custom: true};
     }
 
     async expand(content) {
@@ -1340,7 +1345,7 @@ module.exports = class EmojiMix {
 
     async mixText(a, b) {
         const res = await this.service.resolve(a, b);
-        this.addRecent(res);
+        if (BY_HEX.has(a.hex) && BY_HEX.has(b.hex)) this.addRecent(res);
         if (this.settings.delivery === "emoji") {
             try {
                 const emoji = await this.serverEmoji(res);

@@ -20,7 +20,7 @@ Some pairs don't have official art from Google. Those get blended together local
 
 ### Typing it inline
 
-You can also just type `:cat+dog:` in a message and it turns into the mix when you hit send. It uses Discord's normal emoji names, so whatever you'd type for `:cat:` works here. If a name isn't one of the mixable emojis, the text is left alone. You can switch this off in the plugin settings. It needs the server emoji or link sending mode, since an image upload can't sit inside a line of text.
+You can also just type `:cat+dog:` in a message and it turns into the mix when you hit send. It uses Discord's normal emoji names, so whatever you'd type for `:cat:` works here. Any other Unicode emoji works in the typed syntax too, like `:transgender_flag+cat:`. Those have no official art, so they're blended locally and sent as a server emoji (the link mode can't carry them). If a name isn't an emoji at all, the text is left alone. You can switch this off in the plugin settings. It needs the server emoji or link sending mode, since an image upload can't sit inside a line of text.
 
 ## How it sends
 
