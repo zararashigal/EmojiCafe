@@ -1,10 +1,10 @@
 /**
- * @name EmojiMix
- * @description Mix two emojis into one right from the chat bar, like Google's Emoji Kitchen. Sends them as small images or as inline server emojis.
- * @version 1.0.0
+ * @name EmojiCafe
+ * @description Mix two emojis into one right from the chat bar, like Emoji Kitchen. Sends them as small images or as inline server emojis.
+ * @version 1.0.1
  * @author Ashley Orion
- * @source https://github.com/zararashigal/EmojiMix
- * @website https://github.com/zararashigal/EmojiMix
+ * @source https://github.com/zararashigal/EmojiCafe
+ * @website https://github.com/zararashigal/EmojiCafe
  */
 
 "use strict";

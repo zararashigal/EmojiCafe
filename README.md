@@ -1,10 +1,10 @@
-# EmojiMix
+# EmojiCafe
 
 Ever wanted to smash two emojis together and get a brand new one? That's all this does. It's a [BetterDiscord](https://betterdiscord.app) plugin that puts a little mix button in your chat bar, a bit like Google's Emoji Kitchen. Pick two emojis, send the result, and you're done.
 
 ## Installing
 
-1. Grab [`EmojiMix.plugin.js`](./EmojiMix.plugin.js).
+1. Grab [`EmojiCafe.plugin.js`](./EmojiCafe.plugin.js).
 2. Drop it in your BetterDiscord plugins folder (Settings → Plugins → Open Plugins Folder).
 3. Switch it on and you're good to go.
 
@@ -14,7 +14,7 @@ Click the mix button next to the emoji button, pick one emoji, then pick another
 
 This is what the button looks like in your chat bar:
 
-<img src="./images/button.png" alt="The EmojiMix button in the Discord chat bar" width="96">
+<img src="./images/button.png" alt="The EmojiCafe button in the Discord chat bar" width="96">
 
 Some pairs don't have official art from Google. Those get blended together locally instead, and they show a tiny dot in the picker so you can tell them apart.
 
