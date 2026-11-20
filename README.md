@@ -5,7 +5,7 @@ Ever wanted to smash two emojis together and get a brand new one? That's all thi
 ## Installing
 
 1. Grab [`EmojiCafe.plugin.js`](./EmojiCafe.plugin.js).
-2. Drop it in your BetterDiscord plugins folder (Settings → Plugins → Open Plugins Folder).
+2. Drop it in your BetterDiscord plugins folder (Settings -> Plugins -> Open Plugins Folder).
 3. Switch it on and you're good to go.
 
 ## Using it
