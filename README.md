@@ -14,7 +14,8 @@ Click the mix button next to the emoji button, pick one emoji, then pick another
 
 This is what the button looks like in your chat bar:
 
-<img width="266" height="55" alt="{12A0D193-51ED-4DB7-8E52-049FC2AF6FB2}" src="https://github.com/user-attachments/assets/651f54e2-2b11-4324-b0a4-6e321a9848dd" />
+<img width="259" height="48" alt="{18A70A72-2C45-4A6F-8B4F-99E1C43E551A}" src="https://github.com/user-attachments/assets/850095a4-5e1a-48d1-875e-b837e6db2e7c" />
+
 
 
 Some pairs don't have official art from Google. Those get blended together locally instead, and they show a tiny dot in the picker so you can tell them apart.
