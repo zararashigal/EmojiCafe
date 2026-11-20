@@ -26,16 +26,13 @@ You can also just type `:cat+dog:` in a message and it turns into the mix when y
 
 ## Kitchen Method
 
-You can change this in the plugin settings. **Kitchen Method** appears first, and **Server emoji setup** appears or disappears immediately as you switch to or away from **Server emoji**.
+You can change this in the plugin settings.
 
 - **Image upload** is the default. Your mix goes out as a small image (32 to 96 px, you choose). Heads up that the phone app blows small images up, so they look bigger there.
-<<<<<<< HEAD
 - **Server emoji** sends a proper inline emoji that looks right everywhere, phones included. Open **Server emoji setup** in the plugin settings, turn on the servers where you can manage emoji expressions, then choose **Server emoji** in **Kitchen Method**. If you choose this while inside a server you enabled, that server is selected automatically. The plugin rotates the oldest mix when the chosen slot limit is reached. Without Nitro you can only send these inside their server, so **DMs and other servers need Nitro**. Any old message that used a rotated-out mix will lose its emoji.
-=======
 - **Server emoji** sends a proper inline emoji that looks right everywhere, phones included. It uploads your mixes into servers you pick and rotates the slots, so the oldest mix gets deleted once a server is full. You need Manage Expressions in those servers. And a reminder, for ya dunces!! Jk. But yes, without Nitro you can only send these inside the server they live in, so **DMs and other servers need Nitro**. Thank discord for this... Any old message that used a rotated-out mix will lose its emoji.
 If you can't find the setting for server based slots, click the arrow to the right of it in the plugins settings:
 <img width="881" height="57" alt="{1F4D4CE7-9B4C-44A7-8DC0-9B8EADCDB65A}" src="https://github.com/user-attachments/assets/a7c31cc1-1771-4eb6-9bb6-7525c5f4ddf3" />
->>>>>>> a271ccd6f42778749258b4830c7ecabb5b4378d7
 
 - **Link** just sends the link. It only looks like an emoji for people who also have the plugin.
 
@@ -45,9 +42,6 @@ If you can't find the setting for server based slots, click the arrow to the rig
 - This isn't affiliated with Google or Discord.
 
 Made with love by Ashley <3 :3
-
-## STILL TRYING TO FIGURE OUT HOW TO BRIDGE THE INCOMPATIBILITY BETWEEN DISCORDS TWEMOJI AND GOOGLES EMOJI SYSTEM!!
-The picker will not show every possible combo, inline typed syntax works.
 
 ## License
 
