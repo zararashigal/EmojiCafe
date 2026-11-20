@@ -352,6 +352,15 @@ const EMOJIS = EMOJI_DATA.map((row, index) => {
 const BY_HEX = new Map(EMOJIS.map(e => [e.hex, e]));
 const BY_GLYPH = new Map(EMOJIS.map(e => [e.glyph.replace(/\uFE0F/g, ""), e]));
 const MIX_SYNTAX = /:([\w-]+)\+([\w-]+):/g;
+const EXTRA_EMOJI_NAMES = {
+    transgender_flag: "1f3f3-fe0f-200d-26a7-fe0f",
+    rainbow_flag: "1f3f3-fe0f-200d-1f308",
+    pirate_flag: "1f3f4-200d-2620-fe0f",
+    white_flag: "1f3f3",
+    black_flag: "1f3f4",
+    white_check_mark: "2705",
+    heavy_check_mark: "2714-fe0f"
+};
 
 /* ------------------------------------------------------------------------- *
  * Selectors
@@ -1070,7 +1079,7 @@ module.exports = class EmojiMix {
     }
 
     getSettingsPanel() {
-        return BdApi.UI.buildSettingsPanel({
+        const panel = BdApi.UI.buildSettingsPanel({
             settings: [
                 {type: "switch", id: "renderInline", name: "Show mixes as emojis in chat", note: "Renders Emoji Kitchen links at the size of a normal emoji and hides their image preview. Only you see this; others still get the link.", value: this.settings.renderInline},
                 {type: "switch", id: "jumbo", name: "Enlarge mix-only messages", note: "Like vanilla emojis, a message made only of mixes is shown larger.", value: this.settings.jumbo},
@@ -1079,8 +1088,8 @@ module.exports = class EmojiMix {
                 {
                     type: "dropdown",
                     id: "delivery",
-                    name: "How to send a mix",
-                    note: "Uploads look like an emoji for everyone. Server emojis are real inline emojis, but you need Nitro to send them in DMs and other servers. Links only look like one for people running this plugin. Mixes generated locally are always uploaded.",
+                    name: "Kitchen Method",
+                    note: "Choose how mixes are sent. Server emoji is the inline method. You need Nitro to send server emojis in DMs or other servers.",
                     value: this.settings.delivery,
                     options: [
                         {label: "Image upload (emoji-sized for everyone)", value: "upload"},
@@ -1091,8 +1100,8 @@ module.exports = class EmojiMix {
                 {
                     type: "category",
                     id: "emojiServers",
-                    name: "Emoji slot servers",
-                    shown: false,
+                    name: "Server emoji setup",
+                    shown: true,
                     collapsible: true,
                     settings: [
                         ...this.manageableGuilds().map(g => ({type: "switch", id: `guild:${g.id}`, name: g.name, value: this.settings.emojiGuilds.includes(g.id)})),
@@ -1100,7 +1109,7 @@ module.exports = class EmojiMix {
                             type: "slider",
                             id: "poolSize",
                             name: "Slots to rotate per server",
-                            note: "Once a server holds this many mixes, the oldest one is deleted for each new mix. Messages that used a deleted mix lose their emoji. Keep this below the server's free emoji slots.",
+                            note: "Once a server holds this many mixes, the oldest one is deleted for each new mix. Keep this below the server's free emoji slots.",
                             value: this.settings.poolSize,
                             min: 1,
                             max: 50,
@@ -1130,11 +1139,45 @@ module.exports = class EmojiMix {
                     const guild = id.slice(6);
                     const rest = this.settings.emojiGuilds.filter(g => g !== guild);
                     this.settings.emojiGuilds = value ? [...rest, guild] : rest;
-                } else this.settings[id] = value;
+                } else {
+                    this.settings[id] = value;
+                    if (id === "delivery" && value === "emoji" && !this.settings.emojiGuilds.length) {
+                        const current = BdApi.Webpack.Stores.SelectedGuildStore?.getGuildId();
+                        if (current && this.manageableGuilds().some(g => g.id === current)) {
+                            this.settings.emojiGuilds = [current];
+                        }
+                    }
+                }
                 this.saveSettings();
                 this.applyBodyClasses();
+                if (id === "delivery") this.updateServerSettingsVisibility();
             }
         });
+        setTimeout(() => this.updateServerSettingsVisibility(), 50);
+        return panel;
+    }
+
+    updateServerSettingsVisibility() {
+        setTimeout(() => {
+            const visible = this.settings.delivery === "emoji";
+            const labels = [...document.querySelectorAll("*")].filter(el =>
+                el.children.length === 0 && el.textContent.trim() === "Server emoji setup"
+            );
+            for (const label of labels) {
+                let category = label;
+                let parent = label.parentElement;
+                while (parent && parent !== document.body) {
+                    if (parent.textContent.includes("Kitchen Method")) break;
+                    if (parent.textContent.includes("Slots to rotate per server")
+                        && parent.textContent.includes("Server emoji setup")) {
+                        category = parent;
+                    }
+                    parent = parent.parentElement;
+                }
+                category.hidden = !visible;
+                category.style.display = visible ? "" : "none";
+            }
+        }, 0);
     }
 
     manageableGuilds() {
@@ -1325,7 +1368,9 @@ module.exports = class EmojiMix {
 
     emojiByName(name) {
         const {EmojiStore} = BdApi.Webpack.Stores;
-        const glyph = EmojiStore?.getDisambiguatedEmojiContext?.().getByName?.(name)?.surrogates;
+        const context = EmojiStore?.getDisambiguatedEmojiContext?.();
+        const glyph = context?.getByName?.(name)?.surrogates
+            || (EXTRA_EMOJI_NAMES[name] ? toGlyph(EXTRA_EMOJI_NAMES[name]) : null);
         const known = (glyph && BY_GLYPH.get(glyph.replace(/\uFE0F/g, ""))) || EMOJIS.find(e => e.keywords.split(" ").includes(name.toLowerCase()));
         if (known || !glyph) return known;
 
@@ -1335,11 +1380,27 @@ module.exports = class EmojiMix {
     }
 
     searchEmojis(query) {
-        const names = Object.keys(BdApi.Webpack.Stores.EmojiStore?.getDisambiguatedEmojiContext?.().unicodeAliases ?? {});
         const found = new Map();
+        const names = new Set(Object.keys(EXTRA_EMOJI_NAMES));
+        const context = BdApi.Webpack.Stores.EmojiStore?.getDisambiguatedEmojiContext?.();
+        const aliases = context?.unicodeAliases;
+        if (aliases) {
+            const aliasNames = typeof aliases.keys === "function" ? aliases.keys() : Object.keys(aliases);
+            for (const name of aliasNames) names.add(name);
+        }
+        for (const category of context?.categories ?? []) {
+            for (const emoji of category.emojis ?? []) {
+                if (emoji.names) {
+                    for (const name of emoji.names) if (name) names.add(name);
+                } else if (emoji.name) {
+                    names.add(emoji.name);
+                }
+            }
+        }
+        const normalized = query.toLowerCase().replace(/\s+/g, "_");
         for (const name of names) {
             if (found.size >= 48) break;
-            if (!name.includes(query.replace(/\s+/g, "_"))) continue;
+            if (!name.toLowerCase().includes(normalized)) continue;
             const emoji = this.emojiByName(name);
             if (emoji?.custom && !found.has(emoji.hex)) found.set(emoji.hex, emoji);
         }
