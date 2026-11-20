@@ -14,7 +14,8 @@ Click the mix button next to the emoji button, pick one emoji, then pick another
 
 This is what the button looks like in your chat bar:
 
-<img src="./images/button.png" alt="The EmojiMix button in the Discord chat bar" width="96">
+<img width="266" height="55" alt="{12A0D193-51ED-4DB7-8E52-049FC2AF6FB2}" src="https://github.com/user-attachments/assets/651f54e2-2b11-4324-b0a4-6e321a9848dd" />
+
 
 Some pairs don't have official art from Google. Those get blended together locally instead, and they show a tiny dot in the picker so you can tell them apart.
 
